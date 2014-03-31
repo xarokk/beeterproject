@@ -37,6 +37,21 @@
     	<artifactId>jersey-media-moxy</artifactId>
     	<version>2.6</version>
     </dependency>
+    <dependency>
+    	<groupId>mysql</groupId>
+    	<artifactId>mysql-connector-java</artifactId>
+    	<version>5.1.29</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.glassfish.jersey.ext</groupId>
+    	<artifactId>jersey-declarative-linking</artifactId>
+    	<version>2.6</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.thetransactioncompany</groupId>
+    	<artifactId>cors-filter</artifactId>
+    	<version>1.9.2</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>beeter-api</finalName>
