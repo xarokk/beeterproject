@@ -124,7 +124,7 @@ public class UserResource {
 	}
 
 	private String buildUpdateUsers() {
-		return "update users set email=ifnull(?,email), name=ifnull(?, name) where username=?";
+		return "update users set email= ?, name= ? where username=?";
 	}
 
 	private String buildGetUserByName() {
