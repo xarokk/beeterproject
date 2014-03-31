@@ -29,7 +29,7 @@ import edu.upc.eetac.dsa.cartigas.beeter.api.model.StingCollection;
 import edu.upc.eetac.dsa.cartigas.beeter.api.model.User;
 import edu.upc.eetac.dsa.cartigas.beeter.api.model.UserCollection;
 
-@Path("/users")
+@Path("/users/{username}")
 public class UserResource {
 	@Context
 	private SecurityContext security;
@@ -79,7 +79,6 @@ public class UserResource {
 	}
 
 	@PUT
-	@Path("/{username}")
 	@Consumes(MediaType.BEETER_API_USER)
 	@Produces(MediaType.BEETER_API_USER)
 	public User updateUsersFromDatabase(@PathParam("username") String username,
@@ -201,7 +200,7 @@ public String buildGetStingsOfUser()
 		PreparedStatement stmt = null ; 
 		try {
 			stmt = conn.prepareStatement(buildGetStingsOfUser());
-			stmt.setString(1, "%"+username+"%");
+			stmt.setString(1,username);
 			ResultSet rs = stmt.executeQuery();
 			boolean first = true;
 			long oldestTimestamp = 0;
