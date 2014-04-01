@@ -178,15 +178,20 @@ public class UserResource {
 			throw new ForbiddenException(
 					"You are not allowed to modifify this user");
 	}
-public String buildGetStingsOfUser()
+public String buildGetStingsOfUser(long before)
 {
-	return "Select s.* from Stings s,users u where u.username=s.username && s.username = ?";
+	if(before >0 )
+	{
+		return "Select s.* from stings s,users u where u.username=s.username && s.username = ?  and s.last_modified > ? order by last_modified desc limit ?";
+	}
+	else
+	return "Select s.* from stings s,users u where u.username=s.username && s.username = ? limit ?";
 }
 	@GET
 	@Path("/stings")
 	public StingCollection getStingsOfUser(
 			@PathParam("username") String username,
-			@QueryParam("before") long before, @QueryParam("after") long after) {
+			@QueryParam("before") long before, @QueryParam("length") int length) {
 		StingCollection stings = new StingCollection();
 
 		Connection conn = null;
@@ -196,21 +201,38 @@ public String buildGetStingsOfUser()
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		int longitud;
+		if(length == 0)
+		{
+			longitud = 5;
+		}else
+		{
+		 longitud = length;}
 		
 		PreparedStatement stmt = null ; 
 		try {
-			stmt = conn.prepareStatement(buildGetStingsOfUser());
-			stmt.setString(1,username);
+			stmt = conn.prepareStatement(buildGetStingsOfUser(before));
+			if(before > 0)
+			{
+				stmt.setString(1,username);
+				stmt.setInt(3, longitud);
+				stmt.setLong(2, before);
+			}
+			else
+			{
+				stmt.setString(1,username);
+				stmt.setInt(2, longitud);
+			}
 			ResultSet rs = stmt.executeQuery();
 			boolean first = true;
 			long oldestTimestamp = 0;
 			while(rs.next())
 			{
-
+				
 				Sting sting = new Sting();
 				sting.setId(rs.getString("stingid"));
 				sting.setUsername(rs.getString("username"));
-				sting.setAuthor(rs.getString("name"));
+				//sting.setAuthor(rs.getString("name"));
 				sting.setSubject(rs.getString("subject"));
 				oldestTimestamp = rs.getTimestamp("last_modified").getTime();
 				sting.setLastModified(oldestTimestamp);
