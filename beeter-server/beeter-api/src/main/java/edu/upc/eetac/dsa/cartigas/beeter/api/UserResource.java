@@ -24,10 +24,17 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import org.glassfish.jersey.linking.Binding;
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
+import org.glassfish.jersey.linking.InjectLink.Style;
+
 import edu.upc.eetac.dsa.cartigas.beeter.api.model.Sting;
 import edu.upc.eetac.dsa.cartigas.beeter.api.model.StingCollection;
 import edu.upc.eetac.dsa.cartigas.beeter.api.model.User;
 import edu.upc.eetac.dsa.cartigas.beeter.api.model.UserCollection;
+
+
 
 @Path("/users/{username}")
 public class UserResource {
@@ -36,6 +43,39 @@ public class UserResource {
 
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
 
+	private String buildHashCode(User user)
+	{
+		String s = user.getName() + "" + user.getEmail();
+		
+		return Long.toString(s.hashCode());
+	}
+
+	@GET
+	@Produces(MediaType.BEETER_API_USER)
+	public Response GetUserList2(@PathParam("username") String username,
+			@Context Request request)
+	
+	{
+		//Esto sirve para cachear , para comprobar simplemente cojer el etaag y ponerlo en la el campo de cabeceras
+		CacheControl cc = new CacheControl();
+		User usuario = getUserFromDatabase(username);
+		
+		EntityTag eTag = new EntityTag((buildHashCode(usuario)));
+		Response.ResponseBuilder rb = request.evaluatePreconditions(eTag);
+		if (rb != null) {
+			return rb.cacheControl(cc).tag(eTag).build();
+		}
+
+		// If rb is null then either it is first time request; or resource is
+		// modified
+		// Get the updated representation and return with Etag attached to it
+		rb = Response.ok(usuario).cacheControl(cc).tag(eTag);
+
+		return rb.build();
+		
+	}
+	
+	/*
 	@GET
 	@Produces(MediaType.BEETER_API_USER)
 	public User getUserList(@PathParam("username") String username,
@@ -43,7 +83,7 @@ public class UserResource {
 		//CacheControl cc = new CacheControl();
 		User usuario = getUserFromDatabase(username);
 		return usuario;
-	}
+	}*/
 
 	/*
 	 * AQUIIII!!!!

@@ -14,7 +14,8 @@ import javax.ws.rs.core.Link;
 public class Sting {
 	@InjectLinks({
 		@InjectLink(resource = StingResource.class, style = Style.ABSOLUTE, rel = "stings", title = "Latest stings", type = MediaType.BEETER_API_STING_COLLECTION),
-		@InjectLink(resource = StingResource.class, style = Style.ABSOLUTE, rel = "self edit", title = "Sting", type = MediaType.BEETER_API_STING, method = "getSting", bindings = @Binding(name = "stingid", value = "${instance.id}")) })	private List<Link> links;
+		@InjectLink(resource = StingResource.class, style = Style.ABSOLUTE, rel = "self edit", title = "Sting", type = MediaType.BEETER_API_STING, method = "getSting", bindings = @Binding(name = "stingid", value = "${instance.id}")) })
+	private List<Link> links;
 	private String id;
 	private String username;
 	private String author;

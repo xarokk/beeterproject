@@ -16,8 +16,10 @@ import edu.upc.eetac.dsa.cartigas.beeter.api.UserResource;
 public class User {
 
 	@InjectLinks({
-		@InjectLink(resource = UserResource.class, style = Style.ABSOLUTE, rel = "collection", title = "Ultimos usuarios", type = MediaType.BEETER_API_USER_COLLECTION),
-		@InjectLink(resource = UserResource.class, style = Style.ABSOLUTE, rel = "self edit", title = "Usuario", type = MediaType.BEETER_API_USER, method = "getUsers", bindings = @Binding(name = "username", value = "${instance.name}")) })
+		@InjectLink(resource = UserResource.class, style = Style.ABSOLUTE, rel = "self edit", title = "Usuario", type = MediaType.BEETER_API_USER, method = "getUsers", bindings = @Binding(name = "username", value = "${instance.username}")),
+		@InjectLink(resource = StingResource.class, style = Style.ABSOLUTE, rel = "create-sting", title = "Create sting", type = MediaType.BEETER_API_STING),
+		 
+		})
 	private List<Link> links;
 	private String username;
 	private String name;
